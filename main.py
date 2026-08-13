@@ -41,22 +41,26 @@ def validar_ano(ano):
     #e é menor que ano atual
     return ano.isdigit() and 0 < int(ano) <= datetime.now().year
 
-def validar_data(data):
-    #verifica se a foi digitada no formato correto
-    # 25/12 ou 07/03 ou 25 12 ou 07 03
-    formatos=["%d%m","%d %m"]
+def validar_data(data,ano):
+    formatos=[
+        "%d/%m/%Y",#26/07/2025
+        "%d %m/%Y"#26 07/2025
+    ]
+    # juntar a data e o ano
+    data_completa=f"{data}/{ano}"
 
     for formato in formatos:
-        try:#deu certo
-            #essa linha pega o texto que está em data e tenta transformar em uma data,seguindo no formato dia/mês
-            #datetime=ferramenta do python para trabalhar com datas
-            #.strptime()=lê um texto e tenta entender como data
-            datetime.strptime(data,formato)
+        try:
+            # datetime.strptime()=transforma o texto em um data de verdade
+            data_publicacao=datetime.strptime(data_completa,formato)
+            # nao permite datas futuras
+            if data_publicacao>datetime.now():
+                return False
             return True
-        except ValueError:#captura o erro de valor inválido
-            pass #ignora esse erro e continua o programa
+        except ValueError:
+            pass
     return False
-    
+
 def livro_existe(nome):
 
     #verifica se ja existe um livro com esse nome ignorando maiscula e minuscula
@@ -68,25 +72,28 @@ def cadastrar_livro():
 
     nome = input("Digite o nome do livro: ")
 
-    if not validar_nome(nome):
-        print(Fore.RED + "Nome não pode ser vazio.\n")
-        nome = input("digite o nome do livro novamente:")
-    
+    while not validar_nome(nome):
+            print(Fore.RED + "Nome não pode ser vazio.\n")
+            nome = input("digite o nome do livro novamente:")
+
     if livro_existe(nome):
-        print(Fore.YELLOW + "Livro ja cadastrado.\n")
-        return
+            print(Fore.YELLOW + "Livro ja cadastrado.\n")
+            return
 
+    #data
     data= input("Digite a data e o mês que publicado o livro: ")
-
-    while not validar_data(data):
-        print(Fore.RED + "Data inválida.Use o formato dd/mm.\n")
-        data = input("Digite a data no formato dd/mm:")
-
+    #ano
     ano=input("Digite o ano que o livro foi publicado:")
-
+    #valida o ano
     while not validar_ano(ano):
-        print(Fore.RED + "Ano inválido.\n")
-        ano = input("Digite o ano novamente: ")
+            print(Fore.RED + "Ano inválido.\n")
+            ano = input("Digite o ano novamente: ")
+    #valida a data +ano
+    while not validar_data(data,ano):
+        print(Fore.RED + "Data inválida ou maior que a data de hoje.\n")
+        data = input("Digite a data no formato dd/mm:")
+        ano = input("Digite o ano novamente:")
+
     
     livro={
         "nome": nome,
@@ -109,23 +116,23 @@ def listagem_de_livros():
         print(Fore.WHITE +f"{i+1}.{livro['nome']}-{livro['data']}-{livro['ano']}")
     print()
 
-def pesquisar_livro():
-    print(Fore.CYAN + "\n ===PESQUISAR LIVRO===")
+# def pesquisar_livro():
+#     print(Fore.CYAN + "\n ===PESQUISAR LIVRO===")
     
-    nome=input("Digite o nome do livro para pesquisar:")
+#     nome=input("Digite o nome do livro para pesquisar:")
 
-    encontrados=[livro for livro in biblioteca if nome.lower() in livro["nome"].lower()]
+#     encontrados=[livro for livro in biblioteca if nome.lower() in livro["nome"].lower()]
     
-    if encontrados:
-        print(Fore.GREEN + "\nLivros encontrados:")
-        for livro in encontrados:
-            print(Fore.WHITE + f"{livro['nome']}-{livro['data']}-{livro['ano']}")
-    else:
-        print(Fore.RED + "✘ Livro não encontrado")
-    print()
+#     if encontrados:
+#         print(Fore.GREEN + "\nLivros encontrados:")
+#         for livro in encontrados:
+#             print(Fore.WHITE + f"{livro['nome']}-{livro['data']}-{livro['ano']}")
+#     else:
+#         print(Fore.RED + "✘ Livro não encontrado")
+#     print()
 
-def quantidade_livros():
-    print(Fore.BLUE + f"Quantidade total de livros:{len(biblioteca)}\n")
+# def quantidade_livros():
+#     print(Fore.BLUE + f"Quantidade total de livros:{len(biblioteca)}\n")
 
 def excluir_livro():
     print(Fore.CYAN + "\n===EXCLUIR LIVRO")
@@ -156,9 +163,9 @@ def menu():
     while True:
         print(Fore.MAGENTA + Style.BRIGHT +"===Sistema de Biblioteca===")
         print(Fore.YELLOW +"1 - Cadastrar Livro")
-        print(Fore.YELLOW +"2 - Listar Livros")
-        print(Fore.YELLOW +"3 - Pesquisar livro")
-        print(Fore.YELLOW +"4 - Quantidade de livros")
+        # print(Fore.YELLOW +"2 - Listar Livros")
+        # print(Fore.YELLOW +"3 - Pesquisar livro")
+        # print(Fore.YELLOW +"4 - Quantidade de livros")
         print(Fore.YELLOW +"5 - Excluir livro")
         print(Fore.YELLOW +"0 - Sair")
 
@@ -166,12 +173,12 @@ def menu():
 
         if opcao=="1":
             cadastrar_livro()
-        elif opcao=="2":
-            listagem_de_livros()
-        elif opcao=="3":
-            pesquisar_livro()
-        elif opcao=="4":
-            quantidade_livros()
+        # elif opcao=="2":
+        #     listagem_de_livros()
+        # elif opcao=="3":
+        #     pesquisar_livro()
+        # elif opcao=="4":
+        #     quantidade_livros()
         elif opcao=="5":
             excluir_livro()
         elif opcao=="0":

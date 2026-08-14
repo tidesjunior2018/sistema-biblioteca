@@ -116,23 +116,23 @@ def listagem_de_livros():
         print(Fore.WHITE +f"{i+1}.{livro['nome']}-{livro['data']}-{livro['ano']}")
     print()
 
-# def pesquisar_livro():
-#     print(Fore.CYAN + "\n ===PESQUISAR LIVRO===")
+def pesquisar_livro():
+    print(Fore.CYAN + "\n ===PESQUISAR LIVRO===")
     
-#     nome=input("Digite o nome do livro para pesquisar:")
+    nome=input("Digite o nome do livro para pesquisar:")
 
-#     encontrados=[livro for livro in biblioteca if nome.lower() in livro["nome"].lower()]
+    encontrados=[livro for livro in biblioteca if nome.lower() in livro["nome"].lower()]
     
-#     if encontrados:
-#         print(Fore.GREEN + "\nLivros encontrados:")
-#         for livro in encontrados:
-#             print(Fore.WHITE + f"{livro['nome']}-{livro['data']}-{livro['ano']}")
-#     else:
-#         print(Fore.RED + "✘ Livro não encontrado")
-#     print()
+    if encontrados:
+        print(Fore.GREEN + "\nLivros encontrados:")
+        for livro in encontrados:
+            print(Fore.WHITE + f"{livro['nome']}-{livro['data']}-{livro['ano']}")
+    else:
+        print(Fore.RED + "✘ Livro não encontrado")
+    print()
 
-# def quantidade_livros():
-#     print(Fore.BLUE + f"Quantidade total de livros:{len(biblioteca)}\n")
+def quantidade_livros():
+    print(Fore.BLUE + f"Quantidade total de livros:{len(biblioteca)}\n")
 
 def excluir_livro():
     print(Fore.CYAN + "\n===EXCLUIR LIVRO")
@@ -158,29 +158,56 @@ def excluir_livro():
     except ValueError:
         print(Fore.RED + "Digite o número válido\n")
 
+def excluir_todos_os_livros():
+    print(Fore.CYAN+"\n===EXCLUIR TODOS OS LIVROS===")
+
+    if not biblioteca:
+        print(Fore.YELLOW+"Não existem livros cadastrados")
+        return
+
+    #mostra todos os livros antes de excluir
+    listagem_de_livros()
+    
+    print(Fore.RED+f"Você está prestes a excluir {len(biblioteca)} livro(s).")
+
+    confirmacao=input(Fore.YELLOW+"Tem certeza que deseja excluir todos os livros?(s/n):").lower()
+
+    if confirmacao=="s":
+        #.clear()=ela limpa a lista que já existe
+        biblioteca.clear()
+        #e depois salva a a lista vazia na biblioteca,ai quando voce fecha e abre programa novamente os livros
+        #continua excluido
+        salvar_dados(biblioteca)
+
+        print(Fore.GREEN+"✔ Todos os livros foram excluídos com sucesso!\n")
+    else:
+        print(Fore.YELLOW+"Operação cancelada.\n")
+
 #========================================MENU============================================================
 def menu():
     while True:
         print(Fore.MAGENTA + Style.BRIGHT +"===Sistema de Biblioteca===")
         print(Fore.YELLOW +"1 - Cadastrar Livro")
-        # print(Fore.YELLOW +"2 - Listar Livros")
-        # print(Fore.YELLOW +"3 - Pesquisar livro")
-        # print(Fore.YELLOW +"4 - Quantidade de livros")
+        print(Fore.YELLOW +"3 - Pesquisar livro")
+        print(Fore.YELLOW +"4 - Quantidade de livros")
         print(Fore.YELLOW +"5 - Excluir livro")
+        print(Fore.YELLOW +"6 - Excluir todos os livros")
         print(Fore.YELLOW +"0 - Sair")
 
         opcao=input(Fore.WHITE + "Escolha uma opção: ")
 
         if opcao=="1":
             cadastrar_livro()
-        # elif opcao=="2":
-        #     listagem_de_livros()
-        # elif opcao=="3":
-        #     pesquisar_livro()
-        # elif opcao=="4":
-        #     quantidade_livros()
+        elif opcao=="2":
+            listagem_de_livros()
+        elif opcao=="3":
+            pesquisar_livro()
+        elif opcao=="4":
+            quantidade_livros()
         elif opcao=="5":
             excluir_livro()
+        elif opcao=="6":
+            excluir_todos_os_livros()
         elif opcao=="0":
             print("Saindo do sistema....")
             break
